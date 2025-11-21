@@ -1,12 +1,15 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import os
 
 class DuplicateVisitorError(Exception):
-    pass
+    def __init__(self, visitor_name):
+        self.visitor_name = visitor_name
+        super().__init__(f"Visitors' {visitor_name}' has already visited.")
 
 class EarlyEntryError(Exception):
-    pass
-
+    def __init__(self, message="A 5-minute wait is required between different visitors."):
+        super().__init__(message)
+        
 FILENAME = "visitors.txt"
 
 def ensure_file():
@@ -51,6 +54,7 @@ def add_visitor(visitor_name):
             raise EarlyEntryError(
                 f"Please wait {5 - round(time_diff, 2)} more minutes before a new visitor."
             )
+        raise DuplicateVisitorError(visitor_name)
 
     # Append to file
     with open(FILENAME, "a") as f:
