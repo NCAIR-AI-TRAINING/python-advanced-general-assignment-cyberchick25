@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import os
 
 class DuplicateVisitorError(Exception):
@@ -33,23 +33,30 @@ def get_last_visitor():
             return None, None
 
         # Format: name | timestamp
-        name, time_str = last_line.split(" | ")
-        last_time = datetime.strptime(time_str, "%Y-%m-%d %H:%M:%S")
+        name, last_time = last_line.split(" | ")
+        # last_time = datetime.strptime(time_str, "%Y-%m-%d %H:%M:%S")
         return name, last_time
 
 def add_visitor(visitor_name):
     """Add visitor with required checks."""
-    last_name, last_time = get_last_visitor()
+    last_name, last_timestamp = get_last_visitor()
     
     now = datetime.now()
+    last_time = datetime.fromisoformat(last_timestamp)
 
     # Rule 1: No duplicate consecutive visitors
     if last_name == visitor_name:
         raise DuplicateVisitorError(visitor_name)
+    
+    # Rule 2: 5-minute wait if last visitor is different
+    if last_time:
+        time_diff = (now - last_time).total_seconds() / 60  # in minutes
+        if time_diff < 5:
+            raise EarlyEntryError()
 
     # Append to file
     with open(FILENAME, "a") as f:
-        f.write(f"{visitor_name} | {now.strftime('%Y-%m-%d %H:%M:%S')}\n")
+        f.write(f"{visitor_name} | {now.isoformat()}\n")
   
 def main():
     ensure_file()
