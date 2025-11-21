@@ -1,10 +1,10 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 import os
 
 class DuplicateVisitorError(Exception):
     def __init__(self, visitor_name):
         self.visitor_name = visitor_name
-        super().__init__(f"Visitors' {visitor_name}' has already visited.")
+        super().__init__(f"{visitor_name} has already visited!")
 
 class EarlyEntryError(Exception):
     def __init__(self, message="A 5-minute wait is required between different visitors."):
