@@ -37,12 +37,13 @@ def get_last_visitor():
 def add_visitor(visitor_name):
     """Add visitor with required checks."""
     last_name, last_time = get_last_visitor()
+    
     now = datetime.now()
 
     # Rule 1: No duplicate consecutive visitors
     if last_name == visitor_name:
         raise DuplicateVisitorError("Duplicate consecutive visitors are not allowed.")
-
+    
     # Rule 2: 5-minute wait if last visitor is different
     if last_time is not None:
         time_diff = (now - last_time).total_seconds() / 60  # in minutes
