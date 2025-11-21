@@ -42,7 +42,8 @@ def add_visitor(visitor_name):
     # Rule 1: No duplicate consecutive visitors
     if last_name == visitor_name:
         raise DuplicateVisitorError("Duplicate consecutive visitors are not allowed.")
-
+    
+    '''
     # Rule 2: 5-minute wait if last visitor is different
     if last_time is not None:
         time_diff = (now - last_time).total_seconds() / 60  # in minutes
@@ -50,6 +51,7 @@ def add_visitor(visitor_name):
             raise EarlyEntryError(
                 f"Please wait {5 - round(time_diff, 2)} more minutes before a new visitor."
             )
+    '''
 
     # Append to file
     with open(FILENAME, "a") as f:
